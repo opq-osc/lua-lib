@@ -107,7 +107,7 @@ action:sendGroupUrlPic(654321, 'https://avatars.githubusercontent.com/u/82746709
 action = botoy.new_action(123456) -- 机器人qq号
 ```
 
-### 宏
+### 宏(macros)
 
 构建 OPQ 发送宏的辅助函数
 
@@ -116,3 +116,25 @@ botoy.macros.at(123) -- 艾特单个用户 [ATUSER(123)]
 botoy.macros.at({123,456}) -- 艾特多个用户 [ATUSER(123,456)]
 botoy.macros.userNick(123) -- 获取用户昵称 [GETUSERNICK(123)]
 ```
+
+### 日志(log)
+
+```lua
+local log = botoy.log
+
+-- 普通打印, 任意数量参数
+log.info('Hello OPQ')
+log.info('Hello', 'OPQ', 123456)
+
+-- 格式化打印(格式参考string.format)
+log.infoF('当前时间：%s', os.date('%H:%M'))
+```
+
+|               |
+| ------------- |
+| `log.notice`  |
+| `log.noticeF` |
+| `log.info`    |
+| `log.infoF`   |
+| `log.error`   |
+| `log.errorF`  |
