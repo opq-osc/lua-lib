@@ -432,17 +432,17 @@ end
 return {
   group = function(callback)
     return function(qq, data)
-      return callback(qq, data, Action:new(qq))
+      return callback(tonumber(qq), data, Action:new(qq))
     end
   end,
   friend = function(callback)
     return function(qq, data)
-      return callback(qq, data, Action:new(qq))
+      return callback(tonumber(qq), data, Action:new(qq))
     end
   end,
   event = function(callback)
     return function(qq, data, extData)
-      return callback(qq, data, extData, Action:new(qq))
+      return callback(tonumber(qq), data, extData, Action:new(qq))
     end
   end,
   new_action = new_action,
