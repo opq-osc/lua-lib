@@ -3,16 +3,17 @@
 进一步封装 OPQ 的 lua api，调用更统一，简化开发，去除插件冗余代码, 免受 OPQ wiki 的困扰
 
 <!--ts-->
-* [lua-lib](#lua-lib)
-   * [安装](#安装)
-      * [手动](#手动)
-      * [自动](#自动)
-   * [使用](#使用)
-      * [包装函数](#包装函数)
-         * [action](#action)
-         * [action 当前可用方法](#action-当前可用方法)
-      * [宏(macros)](#宏macros)
-      * [日志(log)](#日志log)
+
+- [lua-lib](#lua-lib)
+  - [安装](#安装)
+    - [手动](#手动)
+    - [自动](#自动)
+  - [使用](#使用)
+    - [包装函数](#包装函数)
+      - [action](#action)
+      - [action 当前可用方法](#action-当前可用方法)
+    - [宏(macros)](#宏macros)
+    - [日志(log)](#日志log)
 
 <!-- Added by: wongxy, at: Fri Jul 30 11:29:26 CST 2021 -->
 
@@ -131,6 +132,7 @@ action = botoy.new_action(123456) -- 机器人qq号
 botoy.macros.at(123) -- 艾特单个用户 [ATUSER(123)]
 botoy.macros.at({123,456}) -- 艾特多个用户 [ATUSER(123,456)]
 botoy.macros.userNick(123) -- 获取用户昵称 [GETUSERNICK(123)]
+botoy.macros.showPic(40000) -- 秀图 [秀图(40000)]  参数40000 - 50000，不指定则随机返回
 ```
 
 ### 日志(log)

@@ -33,6 +33,10 @@ local macros = {
   userNick = function(user)
     return string.format('[GETUSERNICK(%d)]', user)
   end,
+  showPic = function(show_type)
+    math.randomseed(os.time())
+    return string.format('[秀图(%d)]', show_type or math.random(40000, 40005))
+  end,
 }
 
 ----------------------------------------
