@@ -3,19 +3,23 @@
 进一步封装 OPQ 的 lua api，调用更统一，简化开发，去除插件冗余代码, 免受 OPQ wiki 的困扰
 
 <!--ts-->
+* [lua-lib](#lua-lib)
+   * [安装](#安装)
+      * [手动](#手动)
+      * [自动](#自动)
+   * [使用](#使用)
+      * [包装函数](#包装函数)
+         * [action](#action)
+         * [action 当前可用方法](#action-当前可用方法)
+      * [宏(macros)](#宏macros)
+      * [日志(log)](#日志log)
+      * [网络请求(HTTP)](#网络请求http)
+         * [http.request(method, url [, options])](#httprequestmethod-url--options)
+         * [Response](#response)
+         * [快捷方法](#快捷方法)
+      * [其他](#其他)
 
-- [lua-lib](#lua-lib)
-  - [安装](#安装)
-    - [手动](#手动)
-    - [自动](#自动)
-  - [使用](#使用)
-    - [包装函数](#包装函数)
-      - [action](#action)
-      - [action 当前可用方法](#action-当前可用方法)
-    - [宏(macros)](#宏macros)
-    - [日志(log)](#日志log)
-
-<!-- Added by: wongxy, at: Fri Jul 30 11:29:26 CST 2021 -->
+<!-- Added by: wongxy, at: Fri Jul 30 13:56:38 CST 2021 -->
 
 <!--te-->
 
@@ -156,3 +160,63 @@ log.infoF('当前时间：%s', os.date('%H:%M'))
 | `log.infoF`   |
 | `log.error`   |
 | `log.errorF`  |
+
+### 网络请求(HTTP)
+
+```lua
+local http = botoy.http
+```
+
+#### http.request(method, url [, options])
+
+**参数**
+
+| Name    | Type   | Description                |
+| ------- | ------ | -------------------------- |
+| method  | String | 请求类型 ,'GET', 'POST'... |
+| url     | String | 请求地址                   |
+| options | Table  | 可选参数                   |
+
+**Options**
+
+| Name    | Type          | Description                                               |
+| ------- | ------------- | --------------------------------------------------------- |
+| params  | Table         | URL 的 Query 参数                                         |
+| query   | String        | URL 的 Query 字符串                                       |
+| cookies | Table         | Additional cookies to send with the request               |
+| body    | String        | Request body. (请求数据)                                  |
+| headers | Table         | 请求头                                                    |
+| timeout | Number/String | Request timeout. Number of seconds or String such as "1h" |
+
+**最终的 Query 字符串是 params 和 query 相连接**
+
+**返回结果**
+
+Response or (nil, error message)
+
+#### Response
+
+**属性**
+
+| Name        | Type   | Description                                                 |
+| ----------- | ------ | ----------------------------------------------------------- |
+| body        | String | 响应体                                                      |
+| text        | String | 等于 body                                                   |
+| body_size   | Number | 响应体体积                                                  |
+| headers     | Table  | 响应头                                                      |
+| cookies     | Table  | cookies                                                     |
+| status_code | Number | 响应状态码                                                  |
+| url         | String | 最终的请求地址                                              |
+| json        | 方法   | 返回解码后的 json 数据 resp:json() 等同于 json.decode(body) |
+
+#### 快捷方法
+
+`http.get`, `http.post`, `http.put`, `http.delete`, `http.head`, `http.patch`
+
+如 `http.get('https://example.com')` 等于 `http.request('GET', 'https://example.com')`
+
+### 其他
+
+```lua
+botoy.urlencode('你好') -- %E4%BD%A0%E5%A5%BD
+```

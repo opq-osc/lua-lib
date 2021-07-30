@@ -3,6 +3,7 @@
 ------------------------------------------------------------------------
 
 --TODO: document comments
+--      support api using http
 ------------- settings ------------
 --TODO: read from CoreConf.conf
 local HOST = '127.0.0.1'
@@ -12,9 +13,8 @@ local PORT = 8888
 local unpack = unpack or table.unpack
 local api = require 'coreApi'
 local _log = require 'log'
-
--- TODO: support api using http
--- local http = require("http")
+local _http = require 'http'
+local json = require 'json'
 
 ----------------------------------------
 -------------- macros ----------------
@@ -69,6 +69,69 @@ log.info = gen_logger 'info'
 log.infoF = gen_logger('info', true)
 log.error = gen_logger 'error'
 log.errorF = gen_logger('error', true)
+
+----------------------------------------
+-------------- Http ---------------------
+----------------------------------------
+local function urlencode(str)
+  return string.gsub(
+    string.gsub(str, '([^%w%.%- ])', function(c)
+      return string.format('%%%02X', string.byte(c))
+    end),
+    ' ',
+    '%%20'
+  )
+end
+
+local Response = {
+  init = function(self, response)
+    self.__index = setmetatable(self, {
+      __index = function(_, k)
+        return response[k]
+      end,
+    })
+    return setmetatable({ resp = response, text = response.body }, self)
+  end,
+
+  json = function(self)
+    return json.decode(self.resp.body)
+  end,
+}
+
+local function handle_options(opts)
+  opts = opts or {}
+  opts.query = (opts.query or '') .. '&'
+  if opts.params then
+    for name, value in pairs(opts.params) do
+      opts.query = opts.query .. '&' .. name .. '=' .. urlencode(value)
+    end
+  end
+  return opts
+end
+
+local function handle_response(resp, err)
+  if err then
+    return resp, err
+  end
+  return Response:init(resp)
+end
+
+local function http_factory(request_type)
+  if request_type == 'request' then
+    return function(method, url, opts)
+      return handle_response(_http.request(method, url, handle_options(opts)))
+    end
+  end
+  return function(url, opts)
+    return handle_response(_http.request(request_type, url, handle_options(opts)))
+  end
+end
+
+local http = setmetatable({}, {
+  __index = function(_, request_type)
+    return http_factory(request_type)
+  end,
+})
 
 ----------------------------------------
 -------------- api ---------------------
@@ -385,4 +448,6 @@ return {
   new_action = new_action,
   macros = macros,
   log = log,
+  http = http,
+  urlencode = urlencode,
 }
