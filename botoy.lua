@@ -16,21 +16,6 @@ local _log = require 'log'
 -- TODO: support api using http
 -- local http = require("http")
 
-local Action = {}
-
-local FRIEND = 1
-local GROUP = 2
-local PRIVATE = 3
-
-function Action:new(qq, host, port)
-  self.__index = self
-  return setmetatable({
-    qq = qq,
-    host = host or HOST,
-    port = port or PORT,
-  }, self)
-end
-
 ----------------------------------------
 -------------- macros ----------------
 ----------------------------------------
@@ -84,6 +69,21 @@ log.errorF = gen_logger('error', true)
 ----------------------------------------
 -------------- api ---------------------
 ----------------------------------------
+
+local Action = {}
+
+local FRIEND = 1
+local GROUP = 2
+local PRIVATE = 3
+
+function Action:new(qq, host, port)
+  self.__index = self
+  return setmetatable({
+    qq = qq,
+    host = host or HOST,
+    port = port or PORT,
+  }, self)
+end
 
 ----------- common text ----------------
 
