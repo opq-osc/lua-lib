@@ -9,7 +9,10 @@ local HOST = '127.0.0.1'
 local PORT = 8888
 -----------------------------------
 
+local unpack = unpack or table.unpack
 local api = require 'coreApi'
+local _log = require 'log'
+
 -- TODO: support api using http
 -- local http = require("http")
 
@@ -28,7 +31,9 @@ function Action:new(qq, host, port)
   }, self)
 end
 
--------------- uitilities ----------------
+----------------------------------------
+-------------- macros ----------------
+----------------------------------------
 
 local macros = {
   at = function(qq)
@@ -44,6 +49,41 @@ local macros = {
     return string.format('[GETUSERNICK(%d)]', user)
   end,
 }
+
+----------------------------------------
+-------------- log ----------------
+----------------------------------------
+
+local log = {}
+
+local function gen_logger(level, format)
+  return function(...)
+    local items = {}
+    for _, item in ipairs { ... } do
+      table.insert(items, tostring(item))
+    end
+
+    local msg
+    if format then
+      msg = string.format(table.remove(items, 1), unpack(items))
+    else
+      msg = table.concat(items, ' ')
+    end
+
+    _log[level]('%s', msg)
+  end
+end
+
+log.notice = gen_logger 'notice'
+log.noticeF = gen_logger('notice', true)
+log.info = gen_logger 'info'
+log.infoF = gen_logger('info', true)
+log.error = gen_logger 'error'
+log.errorF = gen_logger('error', true)
+
+----------------------------------------
+-------------- api ---------------------
+----------------------------------------
 
 ----------- common text ----------------
 
@@ -340,4 +380,5 @@ return {
   end,
   new_action = new_action,
   macros = macros,
+  log = log,
 }
