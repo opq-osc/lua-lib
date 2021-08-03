@@ -2,6 +2,8 @@
 ------------------------------ 一劳永逸 --------------------------------
 ------------------------------------------------------------------------
 
+local M = {}
+
 --TODO: document comments
 --      support api using http
 ------------- settings ------------
@@ -15,6 +17,34 @@ local api = require 'coreApi'
 local _log = require 'log'
 local _http = require 'http'
 local json = require 'json'
+
+----------------------------------------
+-------------- utilities ---------------
+----------------------------------------
+
+---读取文本文件
+---@param file_path string: 文件路径
+---@return string?
+function read_file(file_path)
+  local file, err = io.open(file_path, 'r')
+  if err then
+    M.log.errorF("Open file '%s' failed: %s", file_path, err)
+    return
+  end
+  local text = file:read '*a'
+  file:close()
+  return text
+end
+
+---读取JSON文件数据
+---@param file_path string: 文件路径
+---@return any?
+function read_json(file_path)
+  local content = read_file(file_path)
+  if content then
+    return json.decode(content)
+  end
+end
 
 ----------------------------------------
 -------------- macros ----------------
@@ -429,7 +459,7 @@ local function new_action(qq, host, port)
   return Action:new(qq, host, port)
 end
 
-return {
+M = {
   group = function(callback)
     return function(qq, data)
       return callback(tonumber(qq), data, Action:new(qq))
@@ -450,4 +480,8 @@ return {
   log = log,
   http = http,
   urlencode = urlencode,
+  read_file = read_file,
+  read_json = read_json,
 }
+
+return M

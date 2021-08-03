@@ -3,21 +3,22 @@
 进一步封装 OPQ 的 lua api，调用更统一，简化开发，去除插件冗余代码, 免受 OPQ wiki 的困扰
 
 <!--ts-->
-* [lua-lib](#lua-lib)
-   * [安装](#安装)
-      * [手动](#手动)
-      * [自动](#自动)
-   * [使用](#使用)
-      * [包装函数](#包装函数)
-         * [action](#action)
-         * [action 当前可用方法](#action-当前可用方法)
-      * [宏(macros)](#宏macros)
-      * [日志(log)](#日志log)
-      * [网络请求(HTTP)](#网络请求http)
-         * [http.request(method, url [, options])](#httprequestmethod-url--options)
-         * [Response](#response)
-         * [快捷方法](#快捷方法)
-      * [其他](#其他)
+
+- [lua-lib](#lua-lib)
+  - [安装](#安装)
+    - [手动](#手动)
+    - [自动](#自动)
+  - [使用](#使用)
+    - [包装函数](#包装函数)
+      - [action](#action)
+      - [action 当前可用方法](#action-当前可用方法)
+    - [宏(macros)](#宏macros)
+    - [日志(log)](#日志log)
+    - [网络请求(HTTP)](#网络请求http)
+      - [http.request(method, url [, options])](#httprequestmethod-url--options)
+      - [Response](#response)
+      - [快捷方法](#快捷方法)
+    - [其他](#其他)
 
 <!-- Added by: wongxy, at: Fri Jul 30 13:56:38 CST 2021 -->
 
@@ -219,4 +220,6 @@ Response or (nil, error message)
 
 ```lua
 botoy.urlencode('你好') -- %E4%BD%A0%E5%A5%BD
+botoy.read_file -- 读取文本文件
+botoy.read_json -- 读取JSON文件
 ```
