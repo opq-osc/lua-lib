@@ -223,3 +223,54 @@ botoy.urlencode('你好') -- %E4%BD%A0%E5%A5%BD
 botoy.read_file -- 读取文本文件
 botoy.read_json -- 读取JSON文件
 ```
+
+### 补丁
+
+`botoy.patch`
+
+以 OPQ 自带的复读机插件为例, 原来是这样的
+
+```lua
+local Api = require 'coreApi'
+
+function ReceiveGroupMsg(CurrentQQ, data)
+  if string.find(data.Content, '复读机') == 1 then
+    local keyWord = data.Content:gsub('复读机', '')
+
+    Api.Api_SendMsg(CurrentQQ, {
+      toUser = data.FromGroupId,
+      sendToType = 2,
+      sendMsgType = 'TextMsg',
+      groupid = 0,
+      content = keyWord,
+      atUser = 0,
+    })
+  end
+
+  return 1
+end
+
+function ReceiveEvents()
+  return 1
+end
+function ReceiveFriendMsg()
+  return 1
+end
+```
+
+现在可以这样
+
+```lua
+function ReceiveGroupMsg(_, data)
+  if data.Content:find '复读机' == 1 then
+    local keyWord = data.Content:gsub('复读机', '')
+    action:sendGroupText(data.FromGroupId, keyWord)
+  end
+
+  return 1
+end
+
+require('Plugins/lib/botoy').patch()
+```
+
+也就是说在最后一行调用`botoy.patch`后，`action`可以在接收消息的三个函数内直接调用，并且不需要用到的接收函数可以不用定义
