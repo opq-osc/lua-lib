@@ -25,7 +25,7 @@ local json = require 'json'
 ---读取文本文件
 ---@param file_path string: 文件路径
 ---@return string?
-function read_file(file_path)
+local function read_file(file_path)
   local file, err = io.open(file_path, 'r')
   if err then
     M.log.errorF("Open file '%s' failed: %s", file_path, err)
@@ -39,7 +39,7 @@ end
 ---读取JSON文件数据
 ---@param file_path string: 文件路径
 ---@return any?
-function read_json(file_path)
+local function read_json(file_path)
   local content = read_file(file_path)
   if content then
     return json.decode(content)
@@ -482,6 +482,33 @@ M = {
   urlencode = urlencode,
   read_file = read_file,
   read_json = read_json,
+  patch = function()
+    local backup = function(qq, data, extData)
+      return 1
+    end
+    local user_group = _G.ReceiveGroupMsg and _G.ReceiveGroupMsg or backup
+    local user_friend = _G.ReceiveFriendMsg and _G.ReceiveFriendMsg or backup
+    local user_event = _G.ReceiveEvents and _G.ReceiveEvents or backup
+
+    _G.ReceiveGroupMsg = function(qq, data)
+      local fenv = getfenv()
+      fenv.action = Action:new(qq)
+      setfenv(user_group, fenv)
+      return user_group(qq, data)
+    end
+    _G.ReceiveFriendMsg = function(qq, data)
+      local fenv = getfenv()
+      fenv.action = Action:new(qq)
+      setfenv(user_friend, fenv)
+      return user_friend(qq, data)
+    end
+    _G.ReceiveEvents = function(qq, data, extData)
+      local fenv = getfenv()
+      fenv.action = Action:new(qq)
+      setfenv(user_event, fenv)
+      return user_event(qq, data, extData)
+    end
+  end,
 }
 
 return M
